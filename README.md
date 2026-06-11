@@ -4,6 +4,8 @@
 
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) 
 ![GitHub forks](https://img.shields.io/github/forks/oulol/LolScan)
+![GitHub Issues or Pull Requests](https://img.shields.io/github/issues/oulol/LolScan)
+![GitHub go.mod Go version](https://img.shields.io/github/go-mod/go-version/oulol/LolScan)
 
 **LolScan** is a fast and multi-threaded port scanner written entirely in Go. It has a built-in bruteforcer to automatically test for weak credentials.
 
@@ -13,6 +15,7 @@ This tool is provided for educational and research purposes only.
 The author assumes no liability for any misuse, damage, or illegal activity caused by this software. 
 You are solely responsible for complying with all applicable local, national, and international laws. 
 By using this tool, you agree to these terms. Use at your own risk.
+
 ## Installation
 
 ### Download Pre-Compiled Binaries
