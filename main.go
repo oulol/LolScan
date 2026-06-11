@@ -164,13 +164,17 @@ func main() {
 
 	wg.Wait()
 	close(sem)
+
 	end := time.Now()
 	diff := end.Sub(start)
 	log("Finished scanning " + fmt.Sprint(len(ips)) + " ips in " + diff.String() + ". Found " + fmt.Sprint(len(openTargets)) + " open targets.")
-	log("Waiting for bruteforcing threads to stop...")
-	bruteGroup.Wait()
 
-	end = time.Now()
-	diff = end.Sub(start)
-	log("Bruteforce finished. Total time: " + diff.String())
+	if brute {
+		log("Waiting for bruteforcing threads to stop...")
+		bruteGroup.Wait()
+
+		end = time.Now()
+		diff = end.Sub(start)
+		log("Bruteforce finished. Total time: " + diff.String())
+	}
 }
