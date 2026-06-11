@@ -15,6 +15,7 @@ import (
 var ips []string
 var credentials []string
 var ports []string
+var brute bool
 
 var discoveryThreads int
 
@@ -35,6 +36,7 @@ func main() {
 	credentialsFlag := flag.String("creds", "credentials.txt", "A file that contains credentials to try (login:password)")
 	portsFlag := flag.String("ports", "37777,8000,8001,8080,8081", "Comma separated list of ports to scan")
 	discoveryThreadsFlag := flag.Int("threads", 32, "The amount of threads to search ports")
+	noBruteforceFlag := flag.Bool("nobrute", false, "Disables bruteforce if present.")
 
 	flag.Parse()
 	initDirectory()
@@ -61,7 +63,6 @@ func main() {
 				continue
 			}
 
-			// Защита от OOM (пропускаем подсети больше /16)
 			ones, _ := ipNet.Mask.Size()
 			if ones < 16 {
 				warn("Subnet " + line + " is too huge. Skipped to prevent memory overflow.")
@@ -81,7 +82,7 @@ func main() {
 			warn("Failed to parse IP: " + line)
 			continue
 		}
-		ips = append(ips, ip.String()) // Исправлено: добавлен пропущенный append для одиночных IP
+		ips = append(ips, ip.String())
 	}
 	log("Loaded " + fmt.Sprint(len(ips)) + " IPs")
 
@@ -108,7 +109,6 @@ func main() {
 	}
 	log("Loaded " + fmt.Sprint(len(credentials)) + " credentials")
 
-	// Очищаем порты от случайных пробелов
 	for _, p := range strings.Split(*portsFlag, ",") {
 		p = strings.TrimSpace(p)
 		if p != "" {
@@ -119,6 +119,8 @@ func main() {
 
 	discoveryThreads = *discoveryThreadsFlag
 	log("Using " + fmt.Sprint(discoveryThreads) + " threads to find open ports")
+
+	brute = !*noBruteforceFlag
 
 	log("Scan started")
 	start = time.Now()
@@ -147,7 +149,11 @@ func main() {
 					mu.Lock()
 					logPortOpen(target)
 					openTargets = append(openTargets, target)
-					go postOpen(target)
+					if brute {
+						go postOpen(target)
+					} else {
+						results.WriteString(target + "\n")
+					}
 					mu.Unlock()
 				}
 
