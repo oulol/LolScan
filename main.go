@@ -30,7 +30,7 @@ func main() {
 	printLogo()
 	initDirectory()
 
-	log("Running LolScan version " + Version)
+	println("Running LolScan \"" + Version + "\" on " + runtime.GOOS + " " + runtime.GOARCH)
 
 	ipsFlag := flag.String("ips", "ips.txt", "A file that contains target ips")
 	credentialsFlag := flag.String("creds", "credentials.txt", "A file that contains credentials to try (login:password)")
