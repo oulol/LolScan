@@ -28,7 +28,6 @@ func main() {
 		fixWindowsConsoleColors()
 	}
 	printLogo()
-	initDirectory()
 
 	println("Running LolScan \"" + Version + "\" on " + runtime.GOOS + " " + runtime.GOARCH)
 
@@ -38,6 +37,7 @@ func main() {
 	discoveryThreadsFlag := flag.Int("threads", 32, "The amount of threads to search ports")
 
 	flag.Parse()
+	initDirectory()
 
 	ipsFile := *ipsFlag
 	ipsRaw, err := os.ReadFile(ipsFile)
