@@ -3,7 +3,6 @@ package services
 import (
 	"crypto/tls"
 	"net/http"
-	"strings"
 	"time"
 )
 
@@ -11,6 +10,7 @@ type ServiceWeb struct {
 	ServiceInterface
 	Address string
 	Proto   string
+	Server  string
 	Status  string
 }
 
@@ -30,16 +30,11 @@ func (s *ServiceWeb) CanIdentify() bool {
 		},
 	}
 
-	r, err := client.Get("https://" + s.Address)
+	r, err := client.Head("https://" + s.Address)
 	if err == nil {
 		s.Proto = r.Proto + " + https"
 		s.Status = r.Status
-		return true
-	}
-
-	if strings.Contains(err.Error(), "HTTP") {
-		s.Proto = r.Proto
-		s.Status = r.Status
+		s.Server = r.Header.Get("Server")
 		return true
 	}
 
@@ -47,6 +42,7 @@ func (s *ServiceWeb) CanIdentify() bool {
 	if err == nil {
 		s.Proto = r.Proto
 		s.Status = r.Status
+		s.Server = r.Header.Get("Server")
 		return true
 	}
 
@@ -54,7 +50,7 @@ func (s *ServiceWeb) CanIdentify() bool {
 }
 
 func (s *ServiceWeb) GetName() string {
-	return s.Proto + " server - " + s.Status
+	return s.Proto + " " + s.Server + " server - " + s.Status
 }
 
 func (s *ServiceWeb) GetType() ServiceType {
