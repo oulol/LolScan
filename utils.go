@@ -1,26 +1,13 @@
 package main
 
 import (
+	"LolScan/services"
 	"fmt"
 	"net"
 	"os"
 	"runtime"
 	"time"
-
-	"golang.org/x/sys/windows"
-
-	"LolScan/services"
 )
-
-func fixWindowsConsoleColors() {
-	stdout := windows.Handle(os.Stdout.Fd())
-	var originalMode uint32
-
-	if err := windows.GetConsoleMode(stdout, &originalMode); err == nil {
-		mode := originalMode | windows.ENABLE_VIRTUAL_TERMINAL_PROCESSING
-		windows.SetConsoleMode(stdout, mode)
-	}
-}
 
 func printLogo() {
 	println("")

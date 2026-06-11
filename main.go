@@ -26,9 +26,7 @@ var done int32 = 0
 var Version = "development"
 
 func main() {
-	if runtime.GOOS == "windows" {
-		fixWindowsConsoleColors()
-	}
+	initConsole()
 	printLogo()
 
 	println("Running LolScan \"" + Version + "\" on " + runtime.GOOS + " " + runtime.GOARCH)
