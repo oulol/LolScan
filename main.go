@@ -126,6 +126,24 @@ func main() {
 	log("Scan started")
 	start = time.Now()
 
+	total := len(ips) * len(ports)
+	stopProgress := make(chan struct{})
+	go func() {
+		ticker := time.NewTicker(200 * time.Millisecond)
+		defer ticker.Stop()
+		for {
+			select {
+			case <-ticker.C:
+				doneVal := atomic.LoadInt32(&done)
+				percent := float64(doneVal) / float64(total) * 100
+
+				printBar(doneVal, total, percent, time.Now().Sub(start).Round(time.Second).String())
+			case <-stopProgress:
+				return
+			}
+		}
+	}()
+
 	var openTargets []string
 	var mu sync.Mutex
 	var wg sync.WaitGroup
@@ -164,6 +182,7 @@ func main() {
 	}
 
 	wg.Wait()
+	close(stopProgress)
 	close(sem)
 
 	end := time.Now()

@@ -44,6 +44,10 @@ func prettyPrint(prefix string, color string, text string) {
 	logs.WriteString(fmt.Sprintf("[%s] %s: %s\n", currentTime, prefix, text))
 }
 
+func printBar(done int32, total int, percent float64, elapsed string) {
+	fmt.Fprintf(os.Stderr, "\033[1;38;2;140;140;255m%d/%d\033[0m targets scanned (\033[1;38;2;152;92;255m%.2f%%\033[0m). Elapsed: \033[1;38;2;92;220;255m%s\033[0m\r", done, total, percent, elapsed)
+}
+
 func log(text string) {
 	prettyPrint("INFO", "\033[1;38;2;140;140;255m", text)
 }
