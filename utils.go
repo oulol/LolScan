@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"runtime"
 	"time"
 
 	"golang.org/x/sys/windows"
@@ -104,6 +105,10 @@ func initDirectory() {
 	os.MkdirAll(path+"snapshots", 0755)
 	logs, _ = os.Create(path + "logs.txt")
 	results, _ = os.Create(path + "results.txt")
+
+	logs.WriteString("LolScan \"" + Version + "\"\n")
+	logs.WriteString("OS: " + runtime.GOOS + " " + runtime.GOARCH + "\n")
+
 }
 
 func addResult(service services.ServiceInterface, cred string) {
