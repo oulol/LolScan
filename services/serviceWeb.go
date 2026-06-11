@@ -64,3 +64,7 @@ func (s *ServiceWeb) GetType() ServiceType {
 func (s *ServiceWeb) TryLogin(login string, password string) LoginStatus {
 	return LoginNotRequired
 }
+
+func (s *ServiceWeb) StoreSnapshots() error {
+	return nil
+}
