@@ -18,21 +18,26 @@ func postOpen(address string) {
 
 	log("Target " + address + " identified (" + device.GetName() + ")")
 
-	for _, cred := range credentials {
-		splat := strings.Split(cred, ":")
-		login, password := splat[0], splat[1]
-		status := device.TryLogin(login, password)
-		if status == services.LoginNotRequired {
-			logConnected(address)
-			addResult(device, "")
-			break
-		} else if status == services.LoginSuccess {
-			logCredentialsFound(address, cred)
-			addResult(device, cred)
-			break
-		} else if status == services.LoginBlocked {
-			warn("Target " + address + " is now locked.")
-			break
+	if brute {
+		for _, cred := range credentials {
+			splat := strings.Split(cred, ":")
+			login, password := splat[0], splat[1]
+			status := device.TryLogin(login, password)
+			if status == services.LoginNotRequired {
+				logConnected(address)
+				addResult(device, "")
+				break
+			} else if status == services.LoginSuccess {
+				logCredentialsFound(address, cred)
+				addResult(device, cred)
+				break
+			} else if status == services.LoginBlocked {
+				warn("Target " + address + " is now locked.")
+				break
+			}
 		}
+	} else {
+		logConnected(address)
+		addResult(device, "")
 	}
 }

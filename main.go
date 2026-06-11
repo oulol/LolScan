@@ -16,6 +16,7 @@ var ips []string
 var credentials []string
 var ports []string
 var brute bool
+var identify bool
 
 var discoveryThreads int
 
@@ -37,6 +38,7 @@ func main() {
 	portsFlag := flag.String("ports", "37777,8000,8001,8080,8081", "Comma separated list of ports to scan")
 	discoveryThreadsFlag := flag.Int("threads", 32, "The amount of threads to search ports")
 	noBruteforceFlag := flag.Bool("nobrute", false, "Disables bruteforce if present.")
+	noIdentifyFlag := flag.Bool("noidentify", false, "Disables service identification if present.")
 
 	flag.Parse()
 	initDirectory()
@@ -121,6 +123,7 @@ func main() {
 	log("Using " + fmt.Sprint(discoveryThreads) + " threads to find open ports")
 
 	brute = !*noBruteforceFlag
+	identify = !*noIdentifyFlag
 
 	log("Scan started")
 	start = time.Now()
@@ -149,7 +152,7 @@ func main() {
 					mu.Lock()
 					logPortOpen(target)
 					openTargets = append(openTargets, target)
-					if brute {
+					if identify {
 						go postOpen(target)
 					} else {
 						results.WriteString(target + "\n")
