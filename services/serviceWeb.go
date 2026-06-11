@@ -65,6 +65,6 @@ func (s *ServiceWeb) TryLogin(login string, password string) LoginStatus {
 	return LoginNotRequired
 }
 
-func (s *ServiceWeb) StoreSnapshots() error {
+func (s *ServiceWeb) StoreSnapshots(path string) error {
 	return nil
 }
