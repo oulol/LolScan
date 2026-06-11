@@ -8,7 +8,10 @@ on:
     tags:
       - 'v*'
   workflow_dispatch:
-      
+
+permissions:
+  contents: write
+
 jobs:
   build:
     name: Build Cross-Platform
@@ -46,10 +49,35 @@ jobs:
         GOOS: ${{ matrix.os }}
         GOARCH: ${{ matrix.arch }}
       run: |
-        go build -v -ldflags="-s -w -X main.Version=$(git describe --tags)" -trimpath -o build/lolscan-${{ matrix.os }}-${{ matrix.arch }}${{ steps.vars.outputs.ext }} .
+        VERSION=$(git describe --tags --always --dirty 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || echo "dev")
+        go build -v -ldflags="-s -w -X main.Version=${VERSION}" -trimpath -o build/lolscan-${{ matrix.os }}-${{ matrix.arch }}${{ steps.vars.outputs.ext }} .
 
-    - name: Upload artifacts
+    - name: Upload Matrix Artifact
       uses: actions/upload-artifact@v4
       with:
         name: lolscan-${{ matrix.os }}-${{ matrix.arch }}
         path: build/lolscan-${{ matrix.os }}-${{ matrix.arch }}${{ steps.vars.outputs.ext }}
+
+  release:
+    name: Create GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    steps:
+    - name: Download all artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: all-artifacts
+
+    - name: Prepare assets
+      run: |
+        mkdir -p release-assets
+        find all-artifacts -type f -exec cp {} release-assets/ \;
+        ls -l release-assets/
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: release-assets/*
+        generate_release_notes: true
