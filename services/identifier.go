@@ -1,6 +1,8 @@
 package services
 
 var Registry []ServiceInterface = []ServiceInterface{
+	&ServiceWebDahuaCamera{},
+	&ServiceDahuaCamera{},
 	&ServiceWeb{},
 }
 
