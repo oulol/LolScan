@@ -31,7 +31,7 @@ git clone https://github.com/oulol/LolScan.git
 cd LolScan
 
 # Build the executable
-go build -ldflags="-s -w -X main.Version=$(git describe --tags --dirty)" -o LolScan
+go build -ldflags="-s -w -X main.Version=$(git describe --tags)" -trimpath -o LolScan
 ```
 
 #### Windows (PowerShell)
@@ -42,7 +42,7 @@ cd LolScan
 
 
 # Build the executable
-go build -ldflags="-s -w -X main.Version=\$(git describe --tags --dirty)" -o LolScan.exe
+go build -ldflags="-s -w -X main.Version=\$(git describe --tags)" -trimpath -o LolScan.exe
 ```
 
 You will end up with an executable file named "LolScan". 
