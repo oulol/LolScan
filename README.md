@@ -65,6 +65,7 @@ echo 192.168.0.1/24 > ips.txt
 - Add more services support
 - Make scanning faster
 - Add snapshot grabbing from supported services
+- Add SYN scanning that works on Windows and Linux
 
 ## Contribution
 
