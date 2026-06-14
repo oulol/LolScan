@@ -15,7 +15,7 @@ func postOpen(address string) {
 	defer func() {
 		if r := recover(); r != nil {
 			error("Panic in processor: " + fmt.Sprint(r))
-			log("Stack:\n" + fmt.Sprint(debug.Stack()))
+			log("Stack:\n" + string(debug.Stack()))
 		}
 	}()
 	defer bruteGroup.Done()

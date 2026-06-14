@@ -32,7 +32,7 @@ func main() {
 	defer func() {
 		if r := recover(); r != nil {
 			error("Panic in main: " + fmt.Sprint(r))
-			log("Stack:\n" + fmt.Sprint(debug.Stack()))
+			log("Stack:\n" + string(debug.Stack()))
 		}
 	}()
 	initConsole()
