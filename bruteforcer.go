@@ -2,6 +2,7 @@ package main
 
 import (
 	"LolScan/services"
+	"slices"
 	"strings"
 	"sync"
 )
@@ -13,6 +14,10 @@ func postOpen(address string) {
 	bruteGroup.Add(1)
 	device := services.Identify(address)
 	if device == nil {
+		return
+	}
+
+	if !slices.Contains(types, device.GetType()) {
 		return
 	}
 

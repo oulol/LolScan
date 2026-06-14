@@ -10,17 +10,17 @@ const (
 	ServiceTypeUnknown
 )
 
-var serviceNames = [...]string{
+var ServiceNames = [...]string{
 	ServiceTypeCamera:  "Camera",
 	ServiceTypeWeb:     "Web",
 	ServiceTypeUnknown: "Unknown",
 }
 
 func (s ServiceType) String() string {
-	if s < 0 || int(s) >= len(serviceNames) {
+	if s < 0 || int(s) >= len(ServiceNames) {
 		return fmt.Sprintf("ServiceType(%d)", s)
 	}
-	return serviceNames[s]
+	return ServiceNames[s]
 }
 
 type LoginStatus int

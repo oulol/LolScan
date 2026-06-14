@@ -1,6 +1,7 @@
 package main
 
 import (
+	"LolScan/services"
 	"flag"
 	"fmt"
 	"net"
@@ -15,6 +16,7 @@ import (
 var ips []string
 var credentials []string
 var ports []string
+var types []services.ServiceType
 var brute bool
 var identify bool
 
@@ -37,6 +39,7 @@ func main() {
 	discoveryThreadsFlag := flag.Int("threads", 32, "The amount of threads to search ports")
 	noBruteforceFlag := flag.Bool("nobrute", false, "Disables bruteforce if present.")
 	noIdentifyFlag := flag.Bool("noidentify", false, "Disables service identification if present.")
+	typesFlag := flag.String("types", "all", "Scans for only specified types (web,camera). Set to all for every type.")
 
 	flag.Parse()
 	initDirectory()
@@ -122,6 +125,15 @@ func main() {
 
 	brute = !*noBruteforceFlag
 	identify = !*noIdentifyFlag
+
+	for _, p := range strings.Split(*typesFlag, ",") {
+		p = strings.TrimSpace(p)
+		for val, str := range services.ServiceNames {
+			if strings.ToLower(str) == strings.ToLower(p) {
+				types = append(types, services.ServiceType(val))
+			}
+		}
+	}
 
 	log("Scan started")
 	start = time.Now()
