@@ -202,11 +202,11 @@ func main() {
 	log("Finished scanning " + fmt.Sprint(len(ips)) + " ips in " + diff.String() + ". Found " + fmt.Sprint(len(openTargets)) + " open targets.")
 
 	if brute {
-		log("Waiting for bruteforcing threads to stop...")
+		log("Waiting for processing threads to stop...")
 		bruteGroup.Wait()
 
 		end = time.Now()
 		diff = end.Sub(start)
-		log("Bruteforce finished. Total time: " + diff.String())
+		log("Processing finished. Total time: " + diff.String())
 	}
 }
