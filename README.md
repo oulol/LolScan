@@ -65,6 +65,11 @@ echo 192.168.0.1/24 > ips.txt
 - Add more services support
 - Make scanning faster
 - Add snapshot grabbing from supported services
+
+## Contribution
+
+Feel free to contribute to this project!
+For more details see file [CONTRIBUTING](CONTRIBUTING.md) 
 ## License
 
 This project is licensed under the Apache License 2.0. See [LICENSE](LICENSE) for details.
