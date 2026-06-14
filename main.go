@@ -7,6 +7,7 @@ import (
 	"net"
 	"os"
 	"runtime"
+	"runtime/debug"
 	"strings"
 	"sync"
 	"sync/atomic"
@@ -28,6 +29,12 @@ var done int32 = 0
 var Version = "development"
 
 func main() {
+	defer func() {
+		if r := recover(); r != nil {
+			error("Panic in main: " + fmt.Sprint(r))
+			log("Stack:\n" + fmt.Sprint(debug.Stack()))
+		}
+	}()
 	initConsole()
 	printLogo()
 

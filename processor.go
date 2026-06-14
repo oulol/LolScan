@@ -2,6 +2,8 @@ package main
 
 import (
 	"LolScan/services"
+	"fmt"
+	"runtime/debug"
 	"slices"
 	"strings"
 	"sync"
@@ -10,6 +12,12 @@ import (
 var bruteGroup sync.WaitGroup
 
 func postOpen(address string) {
+	defer func() {
+		if r := recover(); r != nil {
+			error("Panic in processor: " + fmt.Sprint(r))
+			log("Stack:\n" + fmt.Sprint(debug.Stack()))
+		}
+	}()
 	defer bruteGroup.Done()
 	bruteGroup.Add(1)
 	device := services.Identify(address)
