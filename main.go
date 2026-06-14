@@ -30,7 +30,7 @@ var Version = "development"
 func main() {
 	defer func() {
 		if r := recover(); r != nil {
-			error("Panic in main: " + fmt.Sprint(r))
+			logErr("Panic in main: " + fmt.Sprint(r))
 			log("Stack:\n" + string(debug.Stack()))
 		}
 	}()
@@ -53,7 +53,7 @@ func main() {
 	ipsFile := *ipsFlag
 	ipsRaw, err := os.ReadFile(ipsFile)
 	if err != nil {
-		error("Failed to parse IPs file: " + err.Error())
+		logErr("Failed to parse IPs file: " + err.Error())
 		return
 	}
 	ipsStr := string(ipsRaw)

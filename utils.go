@@ -52,7 +52,7 @@ func log(text string) {
 	prettyPrint("INFO", "\033[1;38;2;140;140;255m", text)
 }
 
-func error(text string) {
+func logErr(text string) {
 	prettyPrint("ERRO", "\033[1;38;2;255;90;90m", text)
 }
 
