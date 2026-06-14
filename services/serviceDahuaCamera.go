@@ -51,7 +51,9 @@ func (s *ServiceDahuaCamera) CanIdentify() bool {
 		return true
 	}
 
-	s.Conn.Close()
+	if s.Conn != nil {
+		s.Conn.Close()
+	}
 	return false
 }
 
