@@ -9,7 +9,6 @@ import (
 	"runtime"
 	"runtime/debug"
 	"strings"
-	"sync"
 	"sync/atomic"
 	"time"
 )
@@ -163,50 +162,12 @@ func main() {
 		}
 	}()
 
-	var openTargets []string
-	var mu sync.Mutex
-	var wg sync.WaitGroup
-
-	sem := make(chan struct{}, discoveryThreads)
-
-	for _, ip := range ips {
-		for _, port := range ports {
-			addr := ip + ":" + port
-
-			wg.Add(1)
-			sem <- struct{}{}
-
-			go func(target string) {
-				defer wg.Done()
-				defer func() { <-sem }()
-
-				conn, err := net.DialTimeout("tcp", target, 700*time.Millisecond)
-				if err == nil {
-					conn.Close()
-
-					mu.Lock()
-					logPortOpen(target)
-					openTargets = append(openTargets, target)
-					if identify {
-						go postOpen(target)
-					} else {
-						results.WriteString(target + "\n")
-					}
-					mu.Unlock()
-				}
-
-				atomic.AddInt32(&done, 1)
-			}(addr)
-		}
-	}
-
-	wg.Wait()
+	opens := dialScan()
 	close(stopProgress)
-	close(sem)
 
 	end := time.Now()
 	diff := end.Sub(start)
-	log("Finished scanning " + fmt.Sprint(len(ips)) + " ips in " + diff.String() + ". Found " + fmt.Sprint(len(openTargets)) + " open targets.")
+	log("Finished scanning " + fmt.Sprint(len(ips)) + " ips in " + diff.String() + ". Found " + fmt.Sprint(opens) + " open targets.")
 
 	if brute {
 		log("Waiting for processing threads to stop...")
