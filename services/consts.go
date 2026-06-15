@@ -7,12 +7,14 @@ type ServiceType int
 const (
 	ServiceTypeCamera ServiceType = iota
 	ServiceTypeWeb
+	ServiceTypeSSH
 	ServiceTypeUnknown
 )
 
 var ServiceNames = [...]string{
 	ServiceTypeCamera:  "Camera",
 	ServiceTypeWeb:     "Web",
+	ServiceTypeSSH: "SSH",
 	ServiceTypeUnknown: "Unknown",
 }
 

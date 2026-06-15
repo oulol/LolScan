@@ -4,6 +4,7 @@ var Registry []ServiceInterface = []ServiceInterface{
 	&ServiceWebDahuaCamera{},
 	//&ServiceDahuaCamera{},
 	&ServiceWeb{},
+	&ServiceSSH{},
 }
 
 func Identify(address string) ServiceInterface {
