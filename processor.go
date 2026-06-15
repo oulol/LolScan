@@ -25,7 +25,7 @@ func postOpen(address string) {
 		return
 	}
 
-	if !slices.Contains(types, device.GetType()) {
+	if !slices.Contains(types, device.GetType()) && len(types) > 0 {
 		return
 	}
 
