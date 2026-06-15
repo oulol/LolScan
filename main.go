@@ -45,7 +45,7 @@ func main() {
 	discoveryThreadsFlag := flag.Int("threads", 32, "The amount of threads to search ports")
 	noBruteforceFlag := flag.Bool("nobrute", false, "Disables bruteforce if present.")
 	noIdentifyFlag := flag.Bool("noidentify", false, "Disables service identification if present.")
-	typesFlag := flag.String("types", "all", "Scans for only specified types (web,camera,ssh). Set to all for every type.")
+	typesFlag := flag.String("types", "all", "Scans for only specified types (web,camera,ssh,ftp). Set to all for every type.")
 
 	flag.Parse()
 	initDirectory()
