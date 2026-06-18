@@ -142,7 +142,7 @@ func main() {
 	for _, p := range strings.Split(*typesFlag, ",") {
 		p = strings.TrimSpace(p)
 		for val, str := range services.ServiceNames {
-			if strings.ToLower(str) == strings.ToLower(p) {
+			if strings.EqualFold(str, p) {
 				types = append(types, services.ServiceType(val))
 			}
 		}
