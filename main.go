@@ -75,12 +75,6 @@ func main() {
 				continue
 			}
 
-			ones, _ := ipNet.Mask.Size()
-			if ones < 16 {
-				warn("Subnet " + line + " is too huge. Skipped to prevent memory overflow.")
-				continue
-			}
-
 			for ip := ipNet.IP.Mask(ipNet.Mask); ipNet.Contains(ip); incIP(ip) {
 				tempIP := make(net.IP, len(ip))
 				copy(tempIP, ip)
