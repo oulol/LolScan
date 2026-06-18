@@ -88,7 +88,7 @@ func main() {
 			warn("Failed to parse IP: " + line)
 			continue
 		}
-		ips = append(ips)
+		ips = append(ips, ip)
 	}
 	log("Loaded " + fmt.Sprint(len(ips)) + " IPs")
 
