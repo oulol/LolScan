@@ -2,9 +2,9 @@ package main
 
 import (
 	"LolScan/services"
+	"bufio"
 	"flag"
 	"fmt"
-	"net"
 	"os"
 	"runtime"
 	"runtime/debug"
@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var ips []net.IP
+var scanner *IpScanner
 var credentials []string
 var ports []string
 var types []services.ServiceType
@@ -54,43 +54,21 @@ func main() {
 	initDirectory()
 
 	ipsFile := *ipsFlag
-	ipsRaw, err := os.ReadFile(ipsFile)
+	ipsRaw, err := os.Open(ipsFile)
 	if err != nil {
 		logErr("Failed to parse IPs file: " + err.Error())
 		return
 	}
-	ipsStr := string(ipsRaw)
 	log("Parsing IPs from file " + ipsFile)
 
-	for _, line := range strings.Split(strings.ReplaceAll(ipsStr, "\r", ""), "\n") {
-		line = strings.TrimSpace(line)
-		if line == "" {
-			continue
-		}
-
-		if strings.Contains(line, "/") {
-			_, ipNet, err := net.ParseCIDR(line)
-			if err != nil {
-				warn("Failed to parse subnet " + line + ":" + err.Error())
-				continue
-			}
-
-			for ip := ipNet.IP.Mask(ipNet.Mask); ipNet.Contains(ip); incIP(ip) {
-				tempIP := make(net.IP, len(ip))
-				copy(tempIP, ip)
-				ips = append(ips, tempIP)
-			}
-			continue
-		}
-
-		ip := net.ParseIP(line)
-		if ip == nil {
-			warn("Failed to parse IP: " + line)
-			continue
-		}
-		ips = append(ips, ip)
+	scanner = NewIpScanner(bufio.NewScanner(ipsRaw))
+	ipsAmount, err := countIPsInFile(ipsFile)
+	if err != nil {
+		logErr("Error counting IPs: " + err.Error())
+		return
 	}
-	log("Loaded " + fmt.Sprint(len(ips)) + " IPs")
+
+	log("Scanning " + fmt.Sprint(ipsAmount) + " IPs")
 
 	credentialsFile := *credentialsFlag
 	credsRaw, err := os.ReadFile(credentialsFile)
@@ -145,7 +123,7 @@ func main() {
 	log("Scan started")
 	start = time.Now()
 
-	total := len(ips) * len(ports)
+	total := ipsAmount * len(ports)
 	stopProgress := make(chan struct{})
 	go func() {
 		ticker := time.NewTicker(200 * time.Millisecond)
@@ -168,7 +146,7 @@ func main() {
 
 	end := time.Now()
 	diff := end.Sub(start)
-	log("Finished scanning " + fmt.Sprint(len(ips)) + " ips in " + diff.String() + ". Found " + fmt.Sprint(opens) + " open targets.")
+	log("Finished scanning " + fmt.Sprint(ipsAmount) + " ips in " + diff.String() + ". Found " + fmt.Sprint(opens) + " open targets.")
 
 	if brute {
 		log("Waiting for processing threads to stop...")

@@ -37,7 +37,11 @@ func dialScan() int64 {
 		}()
 	}
 
-	for _, ip := range ips {
+	for {
+		ip := scanner.Next()
+		if ip == nil {
+			break
+		}
 		strIp := ip.String()
 		for _, port := range ports {
 			jobs <- strIp + ":" + port

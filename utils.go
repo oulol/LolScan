@@ -2,10 +2,12 @@ package main
 
 import (
 	"LolScan/services"
+	"bufio"
 	"fmt"
 	"net"
 	"os"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -110,4 +112,45 @@ func addResult(service services.ServiceInterface, cred string) {
 	}
 
 	results.WriteString(logEntry + "\n")
+}
+
+func countIPsInFile(filename string) (int, error) {
+	file, err := os.Open(filename)
+	if err != nil {
+		return 0, err
+	}
+	defer file.Close()
+
+	scanner := bufio.NewScanner(file)
+	total := 0
+
+	for scanner.Scan() {
+		line := strings.TrimSpace(scanner.Text())
+		if line == "" {
+			continue
+		}
+
+		if strings.Contains(line, "/") {
+			_, ipNet, err := net.ParseCIDR(line)
+			if err != nil {
+				warn("Failed to parse subnet while counting: " + line + " - " + err.Error())
+				continue
+			}
+			ones, bits := ipNet.Mask.Size()
+			size := 1 << (bits - ones)
+			total += size
+		} else {
+			ip := net.ParseIP(line)
+			if ip == nil {
+				warn("Failed to parse IP while counting: " + line)
+				continue
+			}
+			total++
+		}
+	}
+
+	if err := scanner.Err(); err != nil {
+		return total, err
+	}
+	return total, nil
 }
