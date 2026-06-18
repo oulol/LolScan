@@ -23,13 +23,13 @@ func (s *ServiceFTP) GetAddress() string {
 }
 
 func (s *ServiceFTP) CanIdentify() bool {
-	conn, err := net.DialTimeout("tcp", s.Address, 3*time.Second)
+	conn, err := net.DialTimeout("tcp", s.Address, timeout)
 	if err != nil {
 		return false
 	}
 	defer conn.Close()
 
-	conn.SetReadDeadline(time.Now().Add(3 * time.Second))
+	conn.SetReadDeadline(time.Now().Add(timeout))
 
 	reader := bufio.NewReader(conn)
 	line, err := reader.ReadString('\n')
@@ -53,7 +53,7 @@ func (s *ServiceFTP) GetType() ServiceType {
 }
 
 func (s *ServiceFTP) TryLogin(login string, password string) LoginStatus {
-	c, err := ftp.Dial(s.Address, ftp.DialWithTimeout(2*time.Second))
+	c, err := ftp.Dial(s.Address, ftp.DialWithTimeout(timeout))
 	if err != nil {
 		return LoginFailed
 	}

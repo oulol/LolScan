@@ -1,6 +1,9 @@
 package services
 
-import "fmt"
+import (
+	"fmt"
+	"time"
+)
 
 type ServiceType int
 
@@ -35,3 +38,9 @@ const (
 	LoginBlocked
 	LoginFailed
 )
+
+var timeout = 1000 * time.Millisecond
+
+func SetTimeout(val time.Duration) {
+	timeout = val
+}

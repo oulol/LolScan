@@ -4,7 +4,6 @@ import (
 	"net"
 	"sync"
 	"sync/atomic"
-	"time"
 )
 
 func dialScan() int64 {
@@ -23,7 +22,7 @@ func dialScan() int64 {
 				defer wg.Done()
 				defer func() { <-sem }()
 
-				conn, err := net.DialTimeout("tcp", target, 700*time.Millisecond)
+				conn, err := net.DialTimeout("tcp", target, timeout)
 				if err == nil {
 					conn.Close()
 

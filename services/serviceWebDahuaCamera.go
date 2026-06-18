@@ -28,7 +28,7 @@ func (s *ServiceWebDahuaCamera) GetAddress() string {
 
 func (s *ServiceWebDahuaCamera) MD5Of(path string) (string, error) {
 	client := &http.Client{
-		Timeout: 2 * time.Second,
+		Timeout: timeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},

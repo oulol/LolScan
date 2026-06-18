@@ -25,7 +25,7 @@ func (s *ServiceDahuaCamera) GetAddress() string {
 
 func (s *ServiceDahuaCamera) CanIdentify() bool {
 	var err error
-	s.Conn, err = net.Dial("tcp", s.Address)
+	s.Conn, err = net.DialTimeout("tcp", s.Address, timeout)
 	if err != nil {
 		return false
 	}
@@ -33,7 +33,7 @@ func (s *ServiceDahuaCamera) CanIdentify() bool {
 	s.Conn.Write([]byte{0xA0, 0x05, 0x00, 0x60, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x05, 0x02, 0x00, 0x01, 0x00, 0x00, 0xA1, 0xAA})
 
 	buf := make([]byte, 1)
-	s.Conn.SetDeadline(time.Now().Add(2 * time.Second))
+	s.Conn.SetDeadline(time.Now().Add(timeout))
 	_, err = s.Conn.Read(buf)
 	if err != nil {
 		s.Conn.Close()

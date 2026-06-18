@@ -3,7 +3,6 @@ package services
 import (
 	"bytes"
 	"net"
-	"time"
 
 	"golang.org/x/crypto/ssh"
 )
@@ -57,7 +56,7 @@ func (s *ServiceSSH) TryLogin(login string, password string) LoginStatus {
 			ssh.Password(password),
 		},
 		HostKeyCallback: ssh.InsecureIgnoreHostKey(),
-		Timeout:         2 * time.Second,
+		Timeout:         timeout,
 	}
 
 	client, err := ssh.Dial("tcp", s.Address, config)

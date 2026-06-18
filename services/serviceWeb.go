@@ -3,7 +3,6 @@ package services
 import (
 	"crypto/tls"
 	"net/http"
-	"time"
 )
 
 type ServiceWeb struct {
@@ -24,7 +23,7 @@ func (s *ServiceWeb) GetAddress() string {
 
 func (s *ServiceWeb) CanIdentify() bool {
 	client := &http.Client{
-		Timeout: 2 * time.Second,
+		Timeout: timeout,
 		Transport: &http.Transport{
 			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
 		},

@@ -25,6 +25,8 @@ var discoveryThreads int
 var start time.Time
 var done int32 = 0
 
+var timeout time.Duration
+
 var Version = "development"
 
 func main() {
@@ -46,6 +48,7 @@ func main() {
 	noBruteforceFlag := flag.Bool("nobrute", false, "Disables bruteforce if present.")
 	noIdentifyFlag := flag.Bool("noidentify", false, "Disables service identification if present.")
 	typesFlag := flag.String("types", "all", "Scans for only specified types (web,camera,ssh,ftp). Set to all for every type.")
+	timeoutFlag := flag.Int("timeout", 700, "Timeout in ms")
 
 	flag.Parse()
 	initDirectory()
@@ -131,6 +134,10 @@ func main() {
 
 	brute = !*noBruteforceFlag
 	identify = !*noIdentifyFlag
+
+	timeoutInt := *timeoutFlag
+	timeout = time.Duration(timeoutInt) * time.Millisecond
+	services.SetTimeout(timeout)
 
 	for _, p := range strings.Split(*typesFlag, ",") {
 		p = strings.TrimSpace(p)
