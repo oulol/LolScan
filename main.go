@@ -13,7 +13,7 @@ import (
 	"time"
 )
 
-var ips []string
+var ips []net.IP
 var credentials []string
 var ports []string
 var types []services.ServiceType
@@ -78,7 +78,7 @@ func main() {
 			for ip := ipNet.IP.Mask(ipNet.Mask); ipNet.Contains(ip); incIP(ip) {
 				tempIP := make(net.IP, len(ip))
 				copy(tempIP, ip)
-				ips = append(ips, tempIP.String())
+				ips = append(ips, tempIP)
 			}
 			continue
 		}
@@ -88,7 +88,7 @@ func main() {
 			warn("Failed to parse IP: " + line)
 			continue
 		}
-		ips = append(ips, ip.String())
+		ips = append(ips)
 	}
 	log("Loaded " + fmt.Sprint(len(ips)) + " IPs")
 

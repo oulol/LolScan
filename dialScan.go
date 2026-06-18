@@ -10,18 +10,14 @@ func dialScan() int64 {
 	var opens int64
 	var mu sync.Mutex
 	var wg sync.WaitGroup
-	sem := make(chan struct{}, discoveryThreads)
 
-	for _, ip := range ips {
-		for _, port := range ports {
-			addr := ip + ":" + port
-			wg.Add(1)
-			sem <- struct{}{}
+	jobs := make(chan string, discoveryThreads*2)
 
-			go func(target string) {
-				defer wg.Done()
-				defer func() { <-sem }()
-
+	for i := 0; i < discoveryThreads; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			for target := range jobs {
 				conn, err := net.DialTimeout("tcp", target, timeout)
 				if err == nil {
 					conn.Close()
@@ -36,13 +32,19 @@ func dialScan() int64 {
 					}
 					mu.Unlock()
 				}
-
 				atomic.AddInt32(&done, 1)
-			}(addr)
-		}
+			}
+		}()
 	}
 
+	for _, ip := range ips {
+		strIp := ip.String()
+		for _, port := range ports {
+			jobs <- strIp + ":" + port
+		}
+	}
+	close(jobs)
+
 	wg.Wait()
-	close(sem)
 	return opens
 }
