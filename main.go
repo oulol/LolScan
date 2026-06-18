@@ -162,7 +162,7 @@ func main() {
 				doneVal := atomic.LoadInt32(&done)
 				percent := float64(doneVal) / float64(total) * 100
 
-				printBar(doneVal, total, percent, time.Now().Sub(start).Round(time.Second).String())
+				printBar(doneVal, total, percent, time.Since(start).Round(time.Second).String())
 			case <-stopProgress:
 				return
 			}
